@@ -711,3 +711,28 @@ body {
     color: var(--text-secondary);
     font-weight: 400;
 }
+
+/* 手机端适配 (宽度 ≤ 768px) */
+@media (max-width: 768px) {
+    .tooltip {
+        width: auto;                    /* 宽度自适应 */
+        max-width: calc(100vw - 40px);  /* 左右留边距 */
+        left: 20px !important;          /* 强制靠左 */
+        right: 20px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        padding: 14px;
+        font-size: 14px;
+        max-height: 60vh;
+    }
+    .tooltip::before {
+        display: none;                  /* 小箭头在手机上容易错位，直接隐藏 */
+    }
+    .tip-en {
+        font-size: 18px;
+    }
+    .hotspot {
+        width: 20px;                    /* 手指触控区域加大 */
+        height: 20px;
+    }
+}
