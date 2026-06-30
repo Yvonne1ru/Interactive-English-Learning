@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英语学习地图</title>
+    
+    <!-- 引入手绘风格字体：英文 Patrick Hand + 中文 霞鹜文楷 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=LXGW+WenKai&display=swap" rel="stylesheet">
+    
+    <!-- 2. 你的样式表 -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    
+<!-- 你的页面内容... -->
+
+<!-- 顶栏 -->
+<header class="app-header">
+    <h1>
+        <!-- 替换后的 SVG 图标 -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b897c9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-a-icon lucide-book-a" style="vertical-align: middle; margin-right: 8px;">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/>
+            <path d="m8 13 4-7 4 7"/>
+            <path d="M9.1 11h5.7"/>
+        </svg>
+        图解英语 <span style="font-size:13px;color:#94a3b8;font-weight:400">Interactive English Learning</span>
+    </h1>
+    <div class="category-bar" id="categoryBar"></div>
+</header>
+
+<!-- 主体 -->
+<main class="app-main">
+    <!-- 左侧：图片 -->
+    <div class="page-card">
+        <div class="page-header">
+            <div>
+                <span class="page-title" id="pageTitle">加载中...</span>
+                <span class="page-subtitle" id="pageSubtitle"></span>
+            </div>
+            <select class="page-selector" id="pageSelector"></select>
+        </div>
+        <div class="image-wrapper" id="imageWrapper">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <div>加载配置中...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 右侧：词汇表 -->
+    <aside class="sidebar">
+        <div class="vocab-card">
+            <!-- 固定的标题栏 -->
+            <div class="vocab-header">
+                <span class="vocab-title">本图词汇</span>
+                
+                <!-- 👇 新增一个 div 包裹右侧的功能按钮，让它们紧凑靠右 -->
+                <div class="header-actions">
+                    <!-- 1. 一键还原按钮 -->
+                    <button class="reset-mastered-btn" id="resetMasteredBtn" title="清空所有打勾记录">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;">
+                            <path d="M21 5H3"/><path d="M7 12H3"/><path d="M7 19H3"/>
+                            <path d="M12 18a5 5 0 0 0 9-3 4.5 4.5 0 0 0-4.5-4.5c-1.33 0-2.54.54-3.41 1.41L11 14"/>
+                            <path d="M11 10v4h4"/>
+                        </svg>
+                        还原
+                    </button>
+                    
+                    <!-- 2. 你原来的切换模式按钮 -->
+                    <button id="modeToggleBtn" class="mode-toggle-btn">列表模式</button>
+                            <!-- 👇 3. 新增：导出海报按钮 -->
+                    <button id="exportPosterBtn" class="export-poster-btn" title="导出当前页面为高清海报">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        海报
+                    </button>
+
+                </div>
+            </div>
+            
+            <div class="vocab-list" id="vocabList"></div>
+        </div>
+    </aside>
+
+<script src="js/app.js"></script>
+<!-- 引入 html2canvas 截图库 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</body>
+</html>
