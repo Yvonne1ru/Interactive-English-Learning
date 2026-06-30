@@ -1,0 +1,674 @@
+/* =========================================
+   1. CSS 变量定义 (必须放在最前面) 【这是现代简约风】
+   ========================================= */
+:root {
+    --bg-body: #f0f4f8;
+    --bg-card: #ffffff;
+    --bg-hover: #f8fafc;
+    
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-tertiary: #94a3b8;
+    
+    --border-light: #e2e8f0;
+    --primary-color: #3b82f6;
+    --accent-color: #10b981;
+    
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* =========================================
+   2. 全局重置与基础样式
+   ========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: var(--bg-body);
+    min-height: 100vh;
+}
+
+/* ===== 顶栏 ===== */
+.app-header {
+    background: white;
+    border-bottom: 1px solid var(--border-light);
+    padding: 16px 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.app-header h1 {
+    font-size: 20px;
+    color: #1a202c;
+    margin-bottom: 12px;
+}
+
+.category-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.cat-btn {
+    padding: 6px 16px;
+    border: 1px solid #cbd5e0;
+    border-radius: 20px;
+    background: white;
+    cursor: pointer;
+    font-size: 13px;
+    color: #4a5568;
+    transition: all 0.2s;
+}
+
+.cat-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.cat-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* ===== 主体布局 ===== */
+.app-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .app-main {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===== 图片区域 ===== */
+/* ===== 图片区域 ===== */
+/* 1. 外层卡片：确保圆角和整体裁剪 */
+.page-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    overflow: hidden; /* 关键：防止内部元素溢出圆角 */
+}
+
+/* 2. 标题栏：保持原样，层级自然高于下方的图片容器 */
+.page-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: #fafbfc; /* 给标题栏一个微灰背景，区分更明显 */
+    position: relative;
+    z-index: 20; /* 确保标题永远在最上层 */
+}
+
+.page-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.page-subtitle {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-left: 12px;
+}
+
+.page-selector {
+    padding: 6px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #475569;
+    background: #f8fafc;
+    cursor: pointer;
+    outline: none;
+}
+
+.page-selector:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+}
+
+/* 3. 图片容器：核心修复区域 */
+.image-wrapper {
+    position: relative;
+    width: 100%;
+    user-select: none;
+    background: #f1f5f9; /* 图片加载前的底色 */
+    min-height: 300px;    /* 防止加载时高度塌陷 */
+    
+    /* 👇 关键修复：隐藏溢出，放大时不会覆盖标题  */
+    overflow: hidden; 
+}
+
+/* 4. 图片本身：添加过渡和层级控制 */
+.main-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    
+    /* 聚焦动画 */
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    transform-origin: center center;
+    
+    /* 层级控制：确保图片在标注点下方 */
+    position: relative;
+    z-index: 1; 
+}
+
+/* 新增：聚焦状态的样式 */
+.main-image.focused {
+    transform: scale(1.5); /* 放大 1.5 倍，你可以根据需要调整，比如 1.3 或 1.8 */
+    /* transform-origin 会在 JS 中动态设置为标注点的坐标 */
+}
+
+/* 5. 标注点：确保层级高于图片 */
+.hotspot-container {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 10; /* 必须大于图片的 z-index: 1 */
+}
+
+.hotspot {
+    width: auto;
+    height: auto;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 1;
+    text-shadow: 0 0 6px #fbbf24, 0 0 12px #f59e0b;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    animation: softPulse 2s infinite alternate;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hotspot::after, .hotspot::before {
+    display: none !important; /* 去掉原来的圆点伪元素 */
+}
+
+.hotspot:hover, .hotspot.active {
+    transform: scale(1.3);
+    text-shadow: 0 0 10px #fff, 0 0 20px #fbbf24;
+}
+
+@keyframes softPulse {
+    0% { opacity: 0.7; text-shadow: 0 0 4px #fbbf24, 0 0 8px #f59e0b; }
+    100% { opacity: 1; text-shadow: 0 0 8px #fff, 0 0 16px #fbbf24; }
+}
+
+
+/* ===== 提示框 ===== */
+.tooltip {
+    position: absolute;
+    top: 50%;
+    left: 32px; /* 默认右侧 */
+    transform: translateY(-50%) translateX(10px);
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    width: 280px;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 30;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    border: 1px solid var(--border-light);
+    transition: all 0.25s ease;
+}
+
+.tooltip.show {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(-50%) translateX(0);
+}
+
+/* 左侧箭头 */
+.tooltip::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -7px;
+    transform: translateY(-50%) rotate(45deg);
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-left: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--border-light);
+    z-index: -1;
+}
+
+/* 切换到左侧显示 */
+.tooltip.tooltip-left {
+    left: auto;
+    right: 32px;
+    transform: translateY(-50%) translateX(-10px);
+}
+
+.tooltip.tooltip-left.show {
+    transform: translateY(-50%) translateX(0);
+}
+
+.tooltip.tooltip-left::before {
+    left: auto;
+    right: -7px;
+    transform: translateY(-50%) rotate(225deg);
+}
+
+.tip-row-1 {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.tip-en {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.tip-phonetic-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.tip-phonetic {
+    font-size: 13px;
+    color: var(--text-tertiary);
+    font-family: monospace;
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.speak-btn {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+}
+
+.speak-btn svg { width: 14px; height: 14px; }
+
+.speak-btn.us { background: #eff6ff; color: var(--primary-color); }
+.speak-btn.us:hover { background: var(--primary-color); color: white; }
+.speak-btn.uk { background: #f0fdf4; color: var(--accent-color); }
+.speak-btn.uk:hover { background: var(--accent-color); color: white; }
+
+.speak-btn.speaking { animation: speakPulse 0.8s ease infinite; }
+@keyframes speakPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+
+.tip-cn {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.tip-example {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #475569;
+    border-left: 3px solid var(--primary-color);
+}
+
+.tip-example .en-sentence { font-style: italic; color: #334155; }
+.tip-example .cn-sentence { color: var(--text-tertiary); font-size: 12px; margin-top: 2px; }
+
+/* ===== 右侧词汇表 (含填空模式) ===== */
+.sidebar {
+    position: sticky;
+    top: 90px;
+    align-self: start;
+}
+
+.vocab-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+/* 词汇表头部 */
+.vocab-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-light);
+    background: #fafbfc;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.vocab-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+}
+
+.mode-toggle-btn {
+    padding: 4px 12px;
+    border: 1px solid var(--border-light);
+    border-radius: 999px;
+    background: white;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+}
+
+.mode-toggle-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.vocab-list {
+    display: flex;
+    flex-direction: column;
+    max-height: 65vh;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+
+/* 普通列表项 */
+.vocab-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.vocab-item:hover { background: #f1f5f9; }
+
+.vocab-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fb923c;
+    flex-shrink: 0;
+}
+
+.vocab-info { flex: 1; min-width: 0; }
+.vocab-en { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.vocab-cn { font-size: 12px; color: var(--text-tertiary); }
+
+/* =========================================
+   填空模式专属样式
+   ========================================= */
+.vocab-item.quiz-mode {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 12px 16px;
+    border: 1px solid var(--border-light);
+    background: var(--bg-card);
+    margin: 4px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.vocab-item.quiz-mode:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+.vocab-item.quiz-mode.revealed {
+    border-color: var(--accent-color);
+    background: #f0fdf4;
+}
+
+.quiz-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.quiz-en {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    flex: 1;
+}
+
+.quiz-reveal-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.quiz-reveal-btn.hidden-state {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.quiz-reveal-btn.hidden-state:hover {
+    background: #fde68a;
+    transform: scale(1.05);
+}
+
+.quiz-reveal-btn.revealed-state {
+    background: var(--accent-color);
+    color: white;
+}
+
+.quiz-reveal-btn.revealed-state:hover {
+    background: #059669;
+}
+
+.quiz-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+}
+
+.quiz-content.show {
+    max-height: 150px;
+    opacity: 1;
+    margin-top: 10px;
+}
+
+.quiz-cn {
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+.quiz-example {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    line-height: 1.4;
+    font-style: italic;
+    background: rgba(255,255,255,0.6);
+    padding: 6px;
+    border-radius: 4px;
+}
+
+/* 加载/空状态 */
+.loading, .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-tertiary);
+}
+
+.loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--border-light);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 12px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* =========================================
+   极致聚焦模式 (Spotlight & Ripple)
+   ========================================= */
+
+/* 1. 聚焦时，隐藏其他所有标注点 */
+.image-wrapper.is-focused .hotspot:not(.highlighted) {
+    opacity: 0 !important;
+    transform: scale(0) !important;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+/* 2. 聚光灯暗角效果 (图片四周变暗) */
+.image-wrapper.is-focused::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    /* 中心透明，四周变暗 */
+    background: radial-gradient(circle at center, transparent 15%, rgba(0,0,0,0.65) 85%);
+    pointer-events: none;
+    z-index: 5;
+    transition: opacity 0.5s ease;
+}
+
+/* 3. 增强高亮星号 (变大 + 变色 + 呼吸) */
+.hotspot.highlighted {
+    color: #fff;
+    font-size: 26px; /* 比默认更大 */
+    z-index: 60 !important;
+    /* 使用醒目的洋红色/亮红色，比蓝色更跳脱 */
+    text-shadow: 0 0 10px #fff, 0 0 20px #f43f5e, 0 0 30px #f43f5e; 
+    animation: targetPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes targetPulse {
+    0%, 100% { transform: scale(1.2); }
+    50% { transform: scale(1.6); }
+}
+
+/* 4. 雷达涟漪扩散效果 (核心引导) */
+.hotspot.highlighted::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border: 3px solid #f43f5e; /* 涟漪颜色 */
+    border-radius: 50%;
+    animation: ripple 1.5s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+    z-index: -1;
+    box-shadow: 0 0 10px #f43f5e;
+}
+
+@keyframes ripple {
+    0% { 
+        width: 10px; 
+        height: 10px; 
+        opacity: 1; 
+        border-width: 4px; 
+    }
+    100% { 
+        width: 120px; /* 涟漪扩散的范围 */
+        height: 120px; 
+        opacity: 0; 
+        border-width: 0px; 
+    }
+}
+
+/* 填空模式中的音标和发音按钮行 */
+.quiz-phonetic-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.quiz-phonetic {
+    font-size: 13px;
+    color: #94a3b8;
+    font-family: 'Lucida Sans Unicode', 'Courier New', monospace;
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    flex: 1; /* 让音标占据剩余空间 */
+}
+
+/* 确保发音按钮在填空模式下大小合适 */
+.quiz-content .speak-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+}
+
+.quiz-content .speak-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+.quiz-content .speak-btn.us {
+    background: #eff6ff;
+    color: #3b82f6;
+}
+.quiz-content .speak-btn.us:hover {
+    background: #3b82f6;
+    color: white;
+}
+
+.quiz-content .speak-btn.uk {
+    background: #f0fdf4;
+    color: #22c55e;
+}
+.quiz-content .speak-btn.uk:hover {
+    background: #22c55e;
+    color: white;
+}
